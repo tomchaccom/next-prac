@@ -33,7 +33,7 @@ def get_user(user_id: int):
             return user
 
     # 에러 처리 시연 및 실습에 활용할 코드입니다.
-    raise HTTPException(
+    raise HTTPException( # raise HTTPException(status_code = 200, detail = "존재하지 않는 응답입니다. ")
         status_code=404, 
         detail=f"유저 {user_id}를 찾을 수 없습니다"
     )

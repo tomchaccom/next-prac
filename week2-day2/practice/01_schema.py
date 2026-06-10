@@ -3,14 +3,27 @@ import sqlite3
 conn = sqlite3.connect("01_schema.db")
 cursor = conn.cursor()
 
+# SQLite는 INTEGER, TEXT 사용하고 날짜로 TEXT로 입력을 받는다. 
+# references 만 입력 받는다. 원래 form이 
+
 # Step 1. users 테이블 생성
 cursor.execute("""
-   
+    CREATE TABLE IF NOT EXISTS users(
+        id    INTEGER   PRIMARY KEY  AUTOINCREMENT,
+        name  TEXT      NOT NULL
+    )
 """)
 
 # Step 2. messages 테이블 생성
 cursor.execute("""
     
+    CREATE TABLE IF NOT EXISTS messages(
+        id      INTEGER  PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER  NOT NULL,
+        content TEXT     NOT NULL,
+        
+        FOREIGN KEY (user_id) REFERENCES users(user_id)
+    )
 """)
 
 conn.commit()

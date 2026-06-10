@@ -14,7 +14,7 @@ class PremiumBot(BasicBot):
         return f"⭐[VIP] {res}"
 
 bot = PremiumBot()
-print(bot.say("오늘 하루 고생하셨습니다"))
+# print(bot.say("오늘 하루 고생하셨습니다"))
 
 # BasicBot을 상속받는 LogBot 클래스를 만드세요. say 메서드를 호출하면 먼저 화면에 "--- 로그 기록 중 ---"을 출력(print)한 뒤, super()를 이용해 부모의 say 결과를 반환하도록 작성해 보세요.
 

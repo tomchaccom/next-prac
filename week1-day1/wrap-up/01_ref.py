@@ -15,4 +15,4 @@ print(chat_history[-1])                  # "또 올게요" (가장 마지막 데
 
 # dict — 이름표(Key)로 정보 꺼내기
 print(user["name"])                      # "카카오"
-print(user.get("email", "없음"))         # 키가 없어도 에러 없이 "없음" 반환
+print(user.get("email", "없음"))         # 키가 없어도 에러 없이 "없음" 반환, 안전하게 가져오기가 가능하다 .

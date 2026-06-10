@@ -3,7 +3,7 @@ from pydantic import BaseModel
 
 # [문제 1] FastAPI 객체 생성하기
 # 여기에 코드를 작성하세요
-app = FastAPI()
+
 
 # 실습용 기본 데이터
 univ_reviews = {
@@ -16,9 +16,7 @@ univ_reviews = {
 
 # [문제 2] 리뷰 등록을 위한 Pydantic 모델 정의하기
 # 여기에 코드를 작성하세요
-class ReviewCreate(BaseModel):
-    univ_name: str
-    review: str
+
 
 @app.get("/")
 def get_all_reviews():
@@ -27,6 +25,16 @@ def get_all_reviews():
 # [문제 3] 특정 대학교 리뷰 조회 API (GET) 구현하기
 # 경로: /reviews/{univ_name}
 # 여기에 코드를 작성하세요
+@app.get("/reviews/{univ_name}")
+def getUnivByName(univ_name):
+    if univ_name in univ_reviews:
+        return univ_reviews[univ_name]
+    
+    raise HTTPException(
+        status_code = 404,
+        detail = f"{univ_name} 의 리뷰가 존재하지 않습니다" 
+    )
+    
 
 @app.get("/reviews/{univ_name}")
 def get_review(univ_name: str):
@@ -40,7 +48,7 @@ def get_review(univ_name: str):
 # 경로: /reviews
 # 아래 코드를 활용해 작성하세요
 
-@app.post("/reviews")
-def add_review(request: ReviewCreate):
-    univ_reviews[request.univ_name] = request.review
+def add_review():
+		# 딕셔너리에 데이터 추가하기: 딕셔너리명['키'] = 값
+
     return {"message": f"{request.univ_name} 리뷰가 등록되었습니다."}
