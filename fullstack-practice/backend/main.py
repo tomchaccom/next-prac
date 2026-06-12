@@ -107,7 +107,13 @@ def get_posts(db: Session = Depends(get_db)):
 # ─── GET /posts/{post_id} ────────────────────────────────
 @app.get("/posts/{post_id}", response_model=PostResponse)
 def get_post(post_id: int, db: Session = Depends(get_db)):
-    post = db.execute(select(Post).where(Post.id == post_id)).scalar_one_or_none()
+    # ✏️ Q1. Post 테이블에서 id가 post_id와 일치하는 데이터를 찾는 쿼리문(stmt)을 작성하고 실행하세요.
+    # 힌트: select(Post).where(조건)와 db.scalar(stmt)를 조합합니다.
+    stmt = select(Post).where(Post.id == post_id)
+    post = db.scalar(stmt)
+
+    # ✏️ Q2. 만약 일치하는 게시글(post)이 없다면, 사용자에게 404 에러를 반환하세요.
+    # 힌트: raise HTTPException(status_code=404, detail="...")을 사용합니다.
     if not post:
         raise HTTPException(status_code=404, detail="게시글을 찾을 수 없습니다")
     return post
@@ -118,12 +124,14 @@ def get_post(post_id: int, db: Session = Depends(get_db)):
 def create_post(data: PostCreate, db: Session = Depends(get_db)):
     try:
         post = Post(title=data.title, content=data.content)
-        db.add(post)      # 트랜잭션에 추가 (아직 DB에 기록되지 않음)
-        db.commit()       # DB에 영구 반영
-        db.refresh(post)  # id, created_at 등 DB 자동 생성 값 재조회
+        # ✏️ Q1. 데이터를 세션에 임시 추가하고, 실제 DB에 반영한 뒤 최신 정보를 객체에 동기화하세요.
+        db.add(post) # 세션에 임시 추가 
+        db.commit() # DB 에 반영 
+        db.refresh(post) # DB 저장 후 객체를 다시 받아와서 리턴
         return post
     except Exception as e:
-        db.rollback()     # 실패 시 변경사항 전체 취소
+        # ✏️ Q2. 에러가 발생했을 때 DB를 원래 상태로 안전하게 되돌리는 코드를 작성하세요.
+        db.rollback()
         raise HTTPException(status_code=500, detail=f"게시글 생성 실패: {str(e)}")
 
 
@@ -138,6 +146,7 @@ def update_post(post_id: int, data: PostUpdate, db: Session = Depends(get_db)):
             post.title = data.title
         if data.content is not None:
             post.content = data.content
+        # ✏️ Q1. 변경된 사항을 데이터베이스에 반영하고 최신 정보로 동기화하세요.
         db.commit()
         db.refresh(post)
         return post
@@ -153,8 +162,9 @@ def delete_post(post_id: int, db: Session = Depends(get_db)):
     if not post:
         raise HTTPException(status_code=404, detail="게시글을 찾을 수 없습니다")
     try:
-        db.delete(post)  # 삭제 대상으로 표시
-        db.commit()      # DB에서 영구 삭제
+        # ✏️ Q1. 대상을 삭제 목록에 올리고 데이터베이스에 최종 기록하세요.
+        db.delete(post)
+        db.commit()
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=500, detail=f"게시글 삭제 실패: {str(e)}")
