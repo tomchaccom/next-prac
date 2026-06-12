@@ -8,6 +8,8 @@ type Post = {
   created_at: string;
 };
 
+export const dynamic = "force-dynamic";
+
 export default async function PostsPage() {
   const BASE_PATH = process.env.BASE_PATH ?? "";
 
