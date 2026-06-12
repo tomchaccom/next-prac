@@ -100,7 +100,7 @@ export default function SearchPage() {
   // TODO: results 배열을 query 로 필터링하는 로직을 구현해보세요.
   //       post.title 또는 post.content 에 query 가 포함된 게시글만 남기세요.
   // ===========================================================================
-  const filtered: Post[] = results.filter((post));
+  // const filtered: Post[] = results.filter((post));
 
   return (
     <main>
