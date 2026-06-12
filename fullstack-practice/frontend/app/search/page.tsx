@@ -3,6 +3,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import axios from "axios"
 
 type Post = {
   id: number;
@@ -26,35 +27,80 @@ export default function SearchPage() {
   //   흐름: 브라우저 → FastAPI (NEXT_PUBLIC_FASTAPI_URL/posts) 직접 호출
   //   TODO: 아래 useEffect 블록을 완성해보세요.완성 후 Route Handler 방식(아래)은 주석 처리하세요.
   // ===========================================================================
-  /*
+  
+    // useEffect(() => {
+    //   setLoading(true);
+    //   setError(null);
+  
+    //   // TODO: process.env.NEXT_PUBLIC_FASTAPI_URL 을 사용해 /posts 를 fetch 하세요.
+    //   //       성공 시 setResults, 실패 시 setError, 완료 시 setLoading(false) 처리.
+
+    //   fetch(`${process.env.NEXT_PUBLIC_FASTAPI_URL}/posts`)
+    //   .then((response) => {
+
+    //       if(!response.ok) throw new Error("fetch 실패");
+    //       return response.json();
+    //   }).then((data) => 
+    //     setResults(data)
+    //   ).catch((err)=>{
+    //     setError(err)
+
+    //   }).finally(()=> {
+    //     setLoading(false); 
+    //   })
+  
+    // }, []);
+
+
+    //Axios 
     useEffect(() => {
-      setLoading(true);
-      setError(null);
+
+      async function fetchData(){
+
+        try{
+          const response = await axios.get(`${BASE_PATH}/api/search`);
+          setResults(response.data);
+        }catch(error){
+          if(axios.isAxiosError(error)){
+            setError("오류 발생");
+          }else{
+            setError("알수없는 에러")
+          }
+        }finally {
+          setLoading(false);
+        }
+
+
+
+      }
+
+
+    })
   
-      // TODO: process.env.NEXT_PUBLIC_FASTAPI_URL 을 사용해 /posts 를 fetch 하세요.
-      //       성공 시 setResults, 실패 시 setError, 완료 시 setLoading(false) 처리.
-  
-    }, []);
-  */
 
   // ===========================================================================
   // [실습 1] Route Handler 방식
   //   흐름: 브라우저 → /api/search (Route Handler) → FastAPI
   //   TODO: 아래 useEffect 블록을 완성해보세요.
   // ===========================================================================
-  useEffect(() => {
-    setLoading(true);
-    setError(null);
+  // useEffect(() => {
+  //   setLoading(true);
+  //   setError(null);
+
+  //   fetch( `${BASE_PATH}/api/search`)
+
+
+
 
     // TODO: `${BASE_PATH}/api/search` 를 fetch 하세요.
     //       성공 시 setResults, 실패 시 setError, 완료 시 setLoading(false) 처리.
-  }, []);
+ //  }, []);
 
   // ===========================================================================
   // TODO: results 배열을 query 로 필터링하는 로직을 구현해보세요.
   //       post.title 또는 post.content 에 query 가 포함된 게시글만 남기세요.
   // ===========================================================================
-  const filtered: Post[] = results;
+  const filtered: Post[] = results.filter((post));
 
   return (
     <main>

@@ -1,7 +1,7 @@
 "use client";
 
 // TODO: axios 를 import 하세요.
-// import axios from "axios";
+import axios from "axios";
 
 export default function DeleteButton({ postId }: { postId: number }) {
   const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
@@ -21,12 +21,16 @@ export default function DeleteButton({ postId }: { postId: number }) {
   async function handleDelete() {
     if (!confirm("정말 삭제할까요?")) return;
 
-    const res = await fetch(`${BASE_PATH}/api/posts/${postId}`, {
-      method: "DELETE",
-    });
+    try{
+      const res = await axios.delete(`${BASE_PATH}/api/posts/${postId}`)
+      window.location.href = `${BASE_PATH}/api/posts`;
 
-    if (res.ok) {
-      window.location.href = `${BASE_PATH}/posts`;
+    } catch(err){
+      if(axios.isAxiosError(err)){
+        alert("axios error")
+      }else{
+        alert("별도 실패")
+      }
     }
   }
 
