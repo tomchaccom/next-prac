@@ -169,3 +169,26 @@ def delete_post(post_id: int, db: Session = Depends(get_db)):
         db.rollback()
         raise HTTPException(status_code=500, detail=f"게시글 삭제 실패: {str(e)}")
     # 204 No Content: 삭제 성공 시 응답 바디 없음
+
+import os  # 1. 상단에 os 임포트 추가
+
+# ... 기존 코드 동일 ...
+
+app = FastAPI(title="Blog API")
+
+# 2. 환경 변수에서 프론트엔드 주소를 가져오고, 없으면 로컬 주소를 씁니다.
+FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3000")
+
+# 안전하게 허용할 출처 리스트 생성
+origins = [
+    "http://localhost:3000",  # 로컬 테스트용은 상시 허용
+    FRONTEND_URL,             # 배포된 진짜 프론트엔드 주소 허용
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,    # 3. origins 리스트 주입
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
